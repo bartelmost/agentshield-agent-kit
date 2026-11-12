@@ -1,0 +1,13 @@
+{
+  "name": "agentshield-agent-kit",
+  "version": "0.1.0",
+  "description": "Drop-in tool definitions and a paying caller for agentshield.live: verify-before-you-act checks for AI agents (x402, USDC on Base).",
+  "type": "module",
+  "main": "agent-kit.mjs",
+  "license": "MIT",
+  "homepage": "https://agentshield.live/integrate.md",
+  "repository": "github:bartelmost/agentshield-agent-kit",
+  "keywords": ["x402", "ai-agents", "mcp", "tools", "invoice", "iban", "usdc", "base"],
+  "engines": { "node": ">=20" },
+  "dependencies": { "@x402/fetch": "*", "@x402/evm": "*", "viem": "*" }
+}

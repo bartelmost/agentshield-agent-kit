@@ -1,0 +1,207 @@
+[
+ {
+  "name": "agentshield_transfer",
+  "description": "Check a bank transfer before money moves: IBAN, BIC, amount, SEPA scope, remittance text, name. Returns ok and failed fields.",
+  "parameters": {
+   "type": "object",
+   "properties": {
+    "iban": {
+     "type": "string",
+     "description": "Beneficiary IBAN"
+    },
+    "bic": {
+     "type": "string",
+     "description": "Optional BIC"
+    },
+    "amount": {
+     "type": "string",
+     "description": "Optional decimal amount"
+    },
+    "currency": {
+     "type": "string",
+     "description": "Optional currency code"
+    },
+    "reference": {
+     "type": "string",
+     "description": "Optional remittance text"
+    },
+    "name": {
+     "type": "string",
+     "description": "Optional beneficiary name"
+    },
+    "cid": {
+     "type": "string",
+     "description": "Optional German SEPA creditor id"
+    }
+   },
+   "required": [
+    "iban"
+   ],
+   "additionalProperties": false
+  },
+  "route_url": "https://agentshield.live/transfer"
+ },
+ {
+  "name": "agentshield_invoice",
+  "description": "Check an invoice before sending or paying: net + VAT = gross, VAT rate, IBAN, VAT id, date, number. Optional registry=1 asks EU VIES. Returns ok and failed fields.",
+  "parameters": {
+   "type": "object",
+   "properties": {
+    "net": {
+     "type": "string",
+     "description": "Net amount"
+    },
+    "vat": {
+     "type": "string",
+     "description": "VAT amount"
+    },
+    "gross": {
+     "type": "string",
+     "description": "Gross amount"
+    },
+    "rate": {
+     "type": "string",
+     "description": "Optional VAT percent"
+    },
+    "country": {
+     "type": "string",
+     "description": "Seller country code"
+    },
+    "currency": {
+     "type": "string",
+     "description": "Currency code"
+    },
+    "iban": {
+     "type": "string",
+     "description": "Optional IBAN"
+    },
+    "vatid": {
+     "type": "string",
+     "description": "Optional VAT id"
+    },
+    "date": {
+     "type": "string",
+     "description": "Optional YYYY-MM-DD"
+    },
+    "number": {
+     "type": "string",
+     "description": "Optional invoice number"
+    },
+    "registry": {
+     "type": "string",
+     "description": "Set to 1 to also ask EU VIES for the VAT id"
+    }
+   },
+   "required": [
+    "net",
+    "gross"
+   ],
+   "additionalProperties": false
+  },
+  "route_url": "https://agentshield.live/invoice"
+ },
+ {
+  "name": "agentshield_deadline",
+  "description": "Add or subtract business days, skipping weekends and public holidays of a country or region.",
+  "parameters": {
+   "type": "object",
+   "properties": {
+    "date": {
+     "type": "string",
+     "description": "Start date YYYY-MM-DD, not counted"
+    },
+    "days": {
+     "type": "string",
+     "description": "Non-zero business-day count"
+    },
+    "country": {
+     "type": "string",
+     "description": "Two-letter country code"
+    },
+    "region": {
+     "type": "string",
+     "description": "Optional region such as BY"
+    }
+   },
+   "required": [
+    "date",
+    "days",
+    "country"
+   ],
+   "additionalProperties": false
+  },
+  "route_url": "https://agentshield.live/deadline"
+ },
+ {
+  "name": "agentshield_holidays",
+  "description": "All statutory public holidays of a year for a country, optionally one region.",
+  "parameters": {
+   "type": "object",
+   "properties": {
+    "country": {
+     "type": "string",
+     "description": "Two-letter country code"
+    },
+    "year": {
+     "type": "string",
+     "description": "Year"
+    },
+    "region": {
+     "type": "string",
+     "description": "Optional region"
+    }
+   },
+   "required": [
+    "country",
+    "year"
+   ],
+   "additionalProperties": false
+  },
+  "route_url": "https://agentshield.live/holidays"
+ },
+ {
+  "name": "agentshield_cryptopay",
+  "description": "Check an EVM stablecoin transfer: recipient checksum, token contract on that chain.",
+  "parameters": {
+   "type": "object",
+   "properties": {
+    "to": {
+     "type": "string",
+     "description": "Recipient 0x address"
+    },
+    "chain": {
+     "type": "string",
+     "description": "Chain id or name"
+    },
+    "token": {
+     "type": "string",
+     "description": "Optional USDC, USDT or contract address"
+    }
+   },
+   "required": [
+    "to",
+    "chain"
+   ],
+   "additionalProperties": false
+  },
+  "route_url": "https://agentshield.live/cryptopay"
+ },
+ {
+  "name": "agentshield_choose",
+  "description": "Free. Ask whether a subtask is worth paying for. Returns pay, compute or skip and the route to call.",
+  "parameters": {
+   "type": "object",
+   "properties": {
+    "task": {
+     "type": "string",
+     "description": "One sentence: what you are about to do or look up"
+    }
+   },
+   "required": [
+    "task"
+   ],
+   "additionalProperties": false
+  },
+  "route_url": null
+ }
+]
