@@ -1,0 +1,4 @@
+# Remote (streamable HTTP) MCP server, hosted at https://agentshield.live/mcp
+startCommand:
+  type: http
+  url: https://agentshield.live/mcp

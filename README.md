@@ -54,3 +54,14 @@ fields before you proceed. Unknown input returns 404 and is not charged.
 - Contact: support@agentshield.live
 
 Not a firewall, not a security audit, not a certificate. Answers are stored and deterministic, not live market data.
+
+## Frameworks
+
+Tested against the live service with a real payment:
+
+- `examples/langchain.py`: Python, LangChain / LangGraph / CrewAI (official `x402` client)
+- `examples/vercel-ai-sdk.mjs`: TypeScript, Vercel AI SDK
+
+## MCP
+
+Remote server (free `choose_route`, `list_routes`, `describe_route`): `https://agentshield.live/mcp`. Also listed in the official MCP registry as `live.agentshield/facts`.
