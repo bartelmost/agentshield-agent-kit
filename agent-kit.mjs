@@ -41,16 +41,19 @@ export function createAgentShield({ key = process.env.X402_PAYER_KEY, ref = proc
     if (!tool) throw new Error(`Unknown tool ${name}`);
     if (!tool.route) return choose(args.task);
     const url = new URL(BASE + tool.route);
-    for (const [k, v] of Object.entries(args)) if (v !== undefined && v !== "") url.searchParams.set(k, String(v));
-    const probe = await fetch(url);
+    const clean = {};
+    for (const [k, v] of Object.entries(args)) if (v !== undefined && v !== "") clean[k] = String(v);
+    // The five bundles take a JSON body (POST), so IBANs and names never appear in a URL.
+    const init = { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(clean) };
+    const probe = await fetch(url, init);
     if (probe.status === 402) {
       const hdr = probe.headers.get("payment-required");
       const price = hdr ? Number(JSON.parse(Buffer.from(hdr, "base64").toString()).accepts[0].amount) / 1e6 : null;
       if (price !== null && price > maxUsdc) return { error: `price ${price} USDC exceeds maxUsdc ${maxUsdc}` };
     }
-    const headers = { accept: "application/json" };
+    const headers = { accept: "application/json", "content-type": "application/json" };
     if (ref) headers["x-agent-ref"] = ref;
-    const res = await paidFetch(url, { headers });
+    const res = await paidFetch(url, { method: "POST", headers, body: init.body });
     return { status: res.status, ...(await res.json().catch(() => ({}))) };
   }
 
