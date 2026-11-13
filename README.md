@@ -61,6 +61,7 @@ Tested against the live service with a real payment:
 
 - `examples/langchain.py`: Python, LangChain / LangGraph / CrewAI (official `x402` client)
 - `examples/vercel-ai-sdk.mjs`: TypeScript, Vercel AI SDK
+- `examples/invoice-guard/`: runnable agent step that checks an invoice and the payment, and stops on any `ok:false`
 
 ## MCP
 
