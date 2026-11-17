@@ -25,10 +25,22 @@ export const tools = [
     parameters: q({ task: s("One sentence: what you are about to do or look up") }, ["task"]) },
 ];
 
-export function createAgentShield({ key = process.env.X402_PAYER_KEY, ref = process.env.X402_REF, maxUsdc = 0.1 } = {}) {
-  if (!key) throw new Error("Set X402_PAYER_KEY. The key is yours; it never leaves your machine.");
-  const account = privateKeyToAccount(key.startsWith("0x") ? key : `0x${key}`);
-  const paidFetch = wrapFetchWithPayment(globalThis.fetch, new x402Client().register("eip155:8453", new ExactEvmScheme(account)));
+// Options:
+//   maxUsdc  hard per-call cap. A call above it is not made.
+//   onPay    optional callback after each paid call: { tool, route, price_usdc, status, ok, failed, transaction, network, payer }.
+//            Silent when not set. Example: onPay: (p) => console.log(`[agentshield] ${p.route} ${p.price_usdc} USDC ${p.transaction}`)
+//   dryRun   no payment and no key needed. Each call sends the unpaid request and returns the live price from the 402
+//            ({ dryRun: true, would_pay, price_usdc, ... }) or the free 404. It never returns a made-up check result.
+//            Also on with env AGENTSHIELD_DRY_RUN=1, for CI. A real check needs a real payment; rehearse on Base Sepolia at /try.md.
+export function createAgentShield({ key = process.env.X402_PAYER_KEY, ref = process.env.X402_REF, maxUsdc = 0.1, onPay = null,
+  dryRun = process.env.AGENTSHIELD_DRY_RUN === "1" } = {}) {
+  let paidFetch = null;
+  if (!dryRun) {
+    if (!key) throw new Error("Set X402_PAYER_KEY, or pass dryRun: true. The key is yours; it never leaves your machine.");
+    const account = privateKeyToAccount(key.startsWith("0x") ? key : `0x${key}`);
+    paidFetch = wrapFetchWithPayment(globalThis.fetch, new x402Client().register("eip155:8453", new ExactEvmScheme(account)));
+  }
+  const decode = (h) => { try { return h ? JSON.parse(Buffer.from(h, "base64").toString()) : null; } catch { return null; } };
 
   async function choose(task) {
     const r = await fetch(`${BASE}/mcp`, { method: "POST", headers: { "content-type": "application/json" },
@@ -44,18 +56,29 @@ export function createAgentShield({ key = process.env.X402_PAYER_KEY, ref = proc
     const clean = {};
     for (const [k, v] of Object.entries(args)) if (v !== undefined && v !== "") clean[k] = String(v);
     // The five bundles take a JSON body (POST), so IBANs and names never appear in a URL.
-    const init = { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(clean) };
-    const probe = await fetch(url, init);
-    if (probe.status === 402) {
-      const hdr = probe.headers.get("payment-required");
-      const price = hdr ? Number(JSON.parse(Buffer.from(hdr, "base64").toString()).accepts[0].amount) / 1e6 : null;
-      if (price !== null && price > maxUsdc) return { error: `price ${price} USDC exceeds maxUsdc ${maxUsdc}` };
-    }
     const headers = { accept: "application/json", "content-type": "application/json" };
     if (ref) headers["x-agent-ref"] = ref;
-    const res = await paidFetch(url, { method: "POST", headers, body: init.body });
-    return { status: res.status, ...(await res.json().catch(() => ({}))) };
+    const body = JSON.stringify(clean);
+    const probe = await fetch(url, { method: "POST", headers, body });
+    // Not 402: a free 404 (unknown input, not charged, do not retry) or an error. Nothing was paid.
+    if (probe.status !== 402) return { status: probe.status, charged: false, ...(await probe.json().catch(() => ({}))) };
+    const req = decode(probe.headers.get("payment-required"));
+    const accept = req?.accepts?.[0];
+    const price = accept ? Number(accept.amount) / 1e6 : null;
+    if (dryRun) return { dryRun: true, status: 402, charged: false, route: tool.route, price_usdc: price, network: accept?.network ?? null,
+      would_pay: price !== null && price <= maxUsdc, note: "Dry run: price from the live 402. No payment, no check result." };
+    if (price === null || price > maxUsdc) return { error: `price ${price} USDC exceeds maxUsdc ${maxUsdc}`, charged: false };
+    const res = await paidFetch(url, { method: "POST", headers, body });
+    const out = { status: res.status, ...(await res.json().catch(() => ({}))) };
+    const settle = decode(res.headers.get("payment-response"));
+    if (onPay && settle) {
+      try {
+        await onPay({ tool: name, route: tool.route, price_usdc: price, status: res.status, ok: out.ok ?? null, failed: out.failed ?? [],
+          transaction: settle.transaction ?? null, network: settle.network ?? accept.network, payer: settle.payer ?? null });
+      } catch { /* a logging hook must not break the call */ }
+    }
+    return out;
   }
 
-  return { tools, choose, call };
+  return { tools, choose, call, dryRun };
 }

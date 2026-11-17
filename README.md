@@ -11,15 +11,15 @@
 ## Install
 
 ```
-npm i @x402/fetch @x402/evm viem
+npm i agentshield-live
 ```
 
-Copy `agent-kit.mjs` into your project (or `npm i github:bartelmost/agentshield-agent-kit`). The kit contains no key. You pass your own with `X402_PAYER_KEY`; it never leaves your machine.
+Published on npm as [`agentshield-live`](https://www.npmjs.com/package/agentshield-live). Without npm, copy `agent-kit.mjs` and run `npm i @x402/fetch @x402/evm viem`. The kit contains no key. You pass your own with `X402_PAYER_KEY`; it never leaves your machine.
 
 ## Use
 
 ```js
-import { createAgentShield } from "./agent-kit.mjs";
+import { createAgentShield } from "agentshield-live";
 const shield = createAgentShield({ maxUsdc: 0.05 }); // hard per-call cap
 
 // OpenAI
@@ -32,6 +32,25 @@ const out = await shield.call("agentshield_invoice", { net: "100.00", vat: "20.0
 ```
 
 `maxUsdc` is a hard cap: a route priced above it is not called. Optional `X402_REF` (1 to 32 of `A-Za-z0-9_-`) is logged on settled calls. No share is paid.
+
+## Cost log and dry run
+
+```js
+const shield = createAgentShield({
+  maxUsdc: 0.05,
+  onPay: (p) => console.log(`[agentshield] ${p.route} ${p.price_usdc} USDC ok=${p.ok} tx=${p.transaction}`),
+});
+```
+
+`onPay` runs after each settled payment with `tool`, `route`, `price_usdc`, `status`, `ok`, `failed`, `transaction`, `network` and `payer`. Silent when not set. An error inside it does not break the call.
+
+```js
+const shield = createAgentShield({ dryRun: true });   // or AGENTSHIELD_DRY_RUN=1, no key needed (CI)
+await shield.call("agentshield_invoice", { net: "100.00", gross: "119.00", country: "DE" });
+// { dryRun: true, status: 402, charged: false, route: "/invoice", price_usdc: 0.03, would_pay: true, ... }
+```
+
+A dry run sends only the unpaid request. It returns the live price from the 402, or the free 404 for missing or unknown input. It never pays and never returns a check result. Rehearse a real payment on Base Sepolia: https://agentshield.live/try.md
 
 ## No code: system prompt
 

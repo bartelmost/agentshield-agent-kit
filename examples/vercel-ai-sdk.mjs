@@ -1,7 +1,7 @@
-// npm i ai zod @x402/fetch @x402/evm viem   + agent-kit.mjs from agentshield.live/agent-kit.mjs
+// npm i agentshield-live ai zod
 import { tool } from "ai";
 import { z } from "zod";
-import { createAgentShield } from "./agent-kit.mjs";
+import { createAgentShield } from "agentshield-live";
 
 const shield = createAgentShield({ maxUsdc: 0.05 });   // reads X402_PAYER_KEY, hard per-call cap
 
