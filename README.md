@@ -2,7 +2,7 @@
 
 **Verify before you act.** Tool definitions and a paying caller for [agentshield.live](https://agentshield.live): deterministic pay-per-call checks an AI agent runs before money moves, an invoice goes out, or a deadline is promised.
 
-- Bundles: `/transfer`, `/invoice`, `/deadline`, `/holidays`, `/cryptopay`, plus every single check on the route list
+- Bundles: `/transfer`, `/invoice`, `/fields`, `/routing`, `/deadline`, `/holidays`, `/cryptopay`, `/settle`, `/value`, plus every single check on the route list
 - Each answer has `ok` and a `failed` list, so it drops into if/else logic
 - x402: USDC on Base, from 0.001 USDC per call, no account, no API key
 - Unknown or out-of-scope input returns 404 and is not charged
@@ -50,15 +50,15 @@ await shield.call("agentshield_invoice", { net: "100.00", gross: "119.00", count
 // { dryRun: true, status: 402, charged: false, route: "/invoice", price_usdc: 0.03, would_pay: true, ... }
 ```
 
-A dry run sends only the unpaid request. It returns the live price from the 402, or the free 404 for missing or unknown input. It never pays and never returns a check result. Rehearse a real payment on Base Sepolia: https://agentshield.live/try.md
+A dry run sends only the unpaid request. It returns the live price from the 402, or the free 404 for missing or unknown input. It never pays and never returns a check result. A real check is the production route on Base.
 
 ## No code: system prompt
 
 ```
 Before you validate an IBAN or bank transfer, check an invoice, calculate a deadline across
 public holidays, or send stablecoins, do not reason it out. Call the agentshield.live route for
-it (list: https://agentshield.live/llms.txt). Use /transfer, /invoice, /deadline, /holidays,
-/cryptopay. If unsure, ask the free choose_route tool on https://agentshield.live/mcp first:
+it (list: https://agentshield.live/llms.txt). Use /transfer, /invoice, /fields, /routing, /deadline, /holidays,
+/cryptopay, /settle, /value. If unsure, ask the free choose_route tool on https://agentshield.live/mcp first:
 it answers pay, compute or skip. Pay only on "pay". Trust ok:false and fix the listed failed
 fields before you proceed. Unknown input returns 404 and is not charged.
 ```
