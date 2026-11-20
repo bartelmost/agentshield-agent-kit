@@ -39,7 +39,7 @@ export const tools = [
 //            Silent when not set. Example: onPay: (p) => console.log(`[agentshield] ${p.route} ${p.price_usdc} USDC ${p.transaction}`)
 //   dryRun   no payment and no key needed. Each call sends the unpaid request and returns the live price from the 402
 //            ({ dryRun: true, would_pay, price_usdc, ... }) or the free 404. It never returns a made-up check result.
-//            Also on with env AGENTSHIELD_DRY_RUN=1, for CI. A real check needs a real payment; rehearse on Base Sepolia at /try.md.
+//            Also on with env AGENTSHIELD_DRY_RUN=1, for CI. A real check needs a real payment on Base. A retired /try path is not a rehearsal.
 export function createAgentShield({ key = process.env.X402_PAYER_KEY, ref = process.env.X402_REF, maxUsdc = 0.1, onPay = null,
   dryRun = process.env.AGENTSHIELD_DRY_RUN === "1" } = {}) {
   let paidFetch = null;
