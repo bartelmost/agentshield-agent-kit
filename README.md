@@ -10,6 +10,8 @@
 
 ## Install
 
+1.2.1 drops the retired /try rehearsal from the kit comment. A real check is the production route on Base.
+
 ```
 npm i agentshield-live
 ```
