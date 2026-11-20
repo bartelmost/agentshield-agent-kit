@@ -21,6 +21,14 @@ export const tools = [
     parameters: q({ country: s("Two-letter country code"), year: s("Year"), region: s("Optional region") }, ["country", "year"]) },
   { name: "agentshield_cryptopay", route: "/cryptopay", description: "Check an EVM stablecoin transfer: recipient checksum, token contract on that chain.",
     parameters: q({ to: s("Recipient 0x address"), chain: s("Chain id or name"), token: s("Optional USDC, USDT or contract address") }, ["to", "chain"]) },
+  { name: "agentshield_fields", route: "/fields", description: "Check required Peppol invoice fields before sending. Not arithmetic. Returns ok and the missing fields.",
+    parameters: q({ profile: s("peppol"), number: s("Optional invoice number"), date: s("Optional YYYY-MM-DD"), seller: s("Optional seller name"), buyer: s("Optional buyer name") }, ["profile"]) },
+  { name: "agentshield_routing", route: "/routing", description: "Check a German BLZ, Swiss IID, or Banxico SPEI clave before money moves. Not a SWIFT BIC lookup.",
+    parameters: q({ system: s("blz, iid, or spei"), code: s("The clearing code") }, ["system", "code"]) },
+  { name: "agentshield_settle", route: "/settle", description: "Check when a TARGET, Fedwire, or CHAPS payment can arrive. Not a bank cutoff.",
+    parameters: q({ system: s("TARGET, Fedwire, or CHAPS"), date: s("YYYY-MM-DD") }, ["system", "date"]) },
+  { name: "agentshield_value", route: "/value", description: "Check a Lynx, ACSS, Real-Time Rail, SIC, or euroSIC value date. TARGET, Fedwire, and CHAPS are settle.",
+    parameters: q({ system: s("Lynx, ACSS, RTR, SIC, or euroSIC"), date: s("YYYY-MM-DD") }, ["system", "date"]) },
   { name: "agentshield_choose", route: null, description: "Free. Ask whether a subtask is worth paying for. Returns pay, compute or skip and the route to call.",
     parameters: q({ task: s("One sentence: what you are about to do or look up") }, ["task"]) },
 ];
@@ -55,7 +63,7 @@ export function createAgentShield({ key = process.env.X402_PAYER_KEY, ref = proc
     const url = new URL(BASE + tool.route);
     const clean = {};
     for (const [k, v] of Object.entries(args)) if (v !== undefined && v !== "") clean[k] = String(v);
-    // The five bundles take a JSON body (POST), so IBANs and names never appear in a URL.
+    // The bundles take a JSON body (POST), so IBANs and names never appear in a URL.
     const headers = { accept: "application/json", "content-type": "application/json" };
     if (ref) headers["x-agent-ref"] = ref;
     const body = JSON.stringify(clean);
