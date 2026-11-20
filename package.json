@@ -1,13 +1,40 @@
 {
-  "name": "agentshield-agent-kit",
-  "version": "0.1.0",
-  "description": "Drop-in tool definitions and a paying caller for agentshield.live: verify-before-you-act checks for AI agents (x402, USDC on Base).",
+  "name": "agentshield-live",
+  "version": "1.2.0",
+  "description": "Verify before you act. Tool definitions and a paying caller for agentshield.live checks (x402, USDC on Base).",
   "type": "module",
-  "main": "agent-kit.mjs",
+  "main": "./agent-kit.mjs",
+  "exports": {
+    ".": "./agent-kit.mjs"
+  },
+  "files": [
+    "agent-kit.mjs",
+    "tools.json",
+    "README.md",
+    "LICENSE"
+  ],
   "license": "MIT",
   "homepage": "https://agentshield.live/integrate.md",
-  "repository": "github:bartelmost/agentshield-agent-kit",
-  "keywords": ["x402", "ai-agents", "mcp", "tools", "invoice", "iban", "usdc", "base"],
-  "engines": { "node": ">=20" },
-  "dependencies": { "@x402/fetch": "*", "@x402/evm": "*", "viem": "*" }
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bartelmost/agentshield-agent-kit.git"
+  },
+  "keywords": [
+    "agentshield",
+    "x402",
+    "ai-agents",
+    "mcp",
+    "invoice",
+    "iban",
+    "usdc",
+    "base"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@x402/evm": "^2.28.0",
+    "@x402/fetch": "^2.28.0",
+    "viem": "^2.57.0"
+  }
 }
