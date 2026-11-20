@@ -1,207 +1,300 @@
 [
- {
-  "name": "agentshield_transfer",
-  "description": "Check a bank transfer before money moves: IBAN, BIC, amount, SEPA scope, remittance text, name. Returns ok and failed fields.",
-  "parameters": {
-   "type": "object",
-   "properties": {
-    "iban": {
-     "type": "string",
-     "description": "Beneficiary IBAN"
-    },
-    "bic": {
-     "type": "string",
-     "description": "Optional BIC"
-    },
-    "amount": {
-     "type": "string",
-     "description": "Optional decimal amount"
-    },
-    "currency": {
-     "type": "string",
-     "description": "Optional currency code"
-    },
-    "reference": {
-     "type": "string",
-     "description": "Optional remittance text"
-    },
-    "name": {
-     "type": "string",
-     "description": "Optional beneficiary name"
-    },
-    "cid": {
-     "type": "string",
-     "description": "Optional German SEPA creditor id"
+  {
+    "name": "agentshield_transfer",
+    "description": "Check a bank transfer before money moves: IBAN, BIC, amount, SEPA scope, remittance text, name. Returns ok and failed fields.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "iban": {
+          "type": "string",
+          "description": "Beneficiary IBAN"
+        },
+        "bic": {
+          "type": "string",
+          "description": "Optional BIC"
+        },
+        "amount": {
+          "type": "string",
+          "description": "Optional decimal amount"
+        },
+        "currency": {
+          "type": "string",
+          "description": "Optional currency code"
+        },
+        "reference": {
+          "type": "string",
+          "description": "Optional remittance text"
+        },
+        "name": {
+          "type": "string",
+          "description": "Optional beneficiary name"
+        },
+        "cid": {
+          "type": "string",
+          "description": "Optional German SEPA creditor id"
+        }
+      },
+      "required": [
+        "iban"
+      ],
+      "additionalProperties": false
     }
-   },
-   "required": [
-    "iban"
-   ],
-   "additionalProperties": false
   },
-  "route_url": "https://agentshield.live/transfer"
- },
- {
-  "name": "agentshield_invoice",
-  "description": "Check an invoice before sending or paying: net + VAT = gross, VAT rate, IBAN, VAT id, date, number. Optional registry=1 asks EU VIES. Returns ok and failed fields.",
-  "parameters": {
-   "type": "object",
-   "properties": {
-    "net": {
-     "type": "string",
-     "description": "Net amount"
-    },
-    "vat": {
-     "type": "string",
-     "description": "VAT amount"
-    },
-    "gross": {
-     "type": "string",
-     "description": "Gross amount"
-    },
-    "rate": {
-     "type": "string",
-     "description": "Optional VAT percent"
-    },
-    "country": {
-     "type": "string",
-     "description": "Seller country code"
-    },
-    "currency": {
-     "type": "string",
-     "description": "Currency code"
-    },
-    "iban": {
-     "type": "string",
-     "description": "Optional IBAN"
-    },
-    "vatid": {
-     "type": "string",
-     "description": "Optional VAT id"
-    },
-    "date": {
-     "type": "string",
-     "description": "Optional YYYY-MM-DD"
-    },
-    "number": {
-     "type": "string",
-     "description": "Optional invoice number"
-    },
-    "registry": {
-     "type": "string",
-     "description": "Set to 1 to also ask EU VIES for the VAT id"
+  {
+    "name": "agentshield_invoice",
+    "description": "Check an invoice before sending or paying: net + VAT = gross, VAT rate, IBAN, VAT id, date, number. Optional registry=1 asks EU VIES. Returns ok and failed fields.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "net": {
+          "type": "string",
+          "description": "Net amount"
+        },
+        "vat": {
+          "type": "string",
+          "description": "VAT amount"
+        },
+        "gross": {
+          "type": "string",
+          "description": "Gross amount"
+        },
+        "rate": {
+          "type": "string",
+          "description": "Optional VAT percent"
+        },
+        "country": {
+          "type": "string",
+          "description": "Seller country code"
+        },
+        "currency": {
+          "type": "string",
+          "description": "Currency code"
+        },
+        "iban": {
+          "type": "string",
+          "description": "Optional IBAN"
+        },
+        "vatid": {
+          "type": "string",
+          "description": "Optional VAT id"
+        },
+        "date": {
+          "type": "string",
+          "description": "Optional YYYY-MM-DD"
+        },
+        "number": {
+          "type": "string",
+          "description": "Optional invoice number"
+        },
+        "registry": {
+          "type": "string",
+          "description": "Set to 1 to also ask EU VIES for the VAT id"
+        }
+      },
+      "required": [
+        "net",
+        "gross"
+      ],
+      "additionalProperties": false
     }
-   },
-   "required": [
-    "net",
-    "gross"
-   ],
-   "additionalProperties": false
   },
-  "route_url": "https://agentshield.live/invoice"
- },
- {
-  "name": "agentshield_deadline",
-  "description": "Add or subtract business days, skipping weekends and public holidays of a country or region.",
-  "parameters": {
-   "type": "object",
-   "properties": {
-    "date": {
-     "type": "string",
-     "description": "Start date YYYY-MM-DD, not counted"
-    },
-    "days": {
-     "type": "string",
-     "description": "Non-zero business-day count"
-    },
-    "country": {
-     "type": "string",
-     "description": "Two-letter country code"
-    },
-    "region": {
-     "type": "string",
-     "description": "Optional region such as BY"
+  {
+    "name": "agentshield_deadline",
+    "description": "Add or subtract business days, skipping weekends and public holidays of a country or region.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string",
+          "description": "Start date YYYY-MM-DD, not counted"
+        },
+        "days": {
+          "type": "string",
+          "description": "Non-zero business-day count"
+        },
+        "country": {
+          "type": "string",
+          "description": "Two-letter country code"
+        },
+        "region": {
+          "type": "string",
+          "description": "Optional region such as BY"
+        }
+      },
+      "required": [
+        "date",
+        "days",
+        "country"
+      ],
+      "additionalProperties": false
     }
-   },
-   "required": [
-    "date",
-    "days",
-    "country"
-   ],
-   "additionalProperties": false
   },
-  "route_url": "https://agentshield.live/deadline"
- },
- {
-  "name": "agentshield_holidays",
-  "description": "All statutory public holidays of a year for a country, optionally one region.",
-  "parameters": {
-   "type": "object",
-   "properties": {
-    "country": {
-     "type": "string",
-     "description": "Two-letter country code"
-    },
-    "year": {
-     "type": "string",
-     "description": "Year"
-    },
-    "region": {
-     "type": "string",
-     "description": "Optional region"
+  {
+    "name": "agentshield_holidays",
+    "description": "All statutory public holidays of a year for a country, optionally one region.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "country": {
+          "type": "string",
+          "description": "Two-letter country code"
+        },
+        "year": {
+          "type": "string",
+          "description": "Year"
+        },
+        "region": {
+          "type": "string",
+          "description": "Optional region"
+        }
+      },
+      "required": [
+        "country",
+        "year"
+      ],
+      "additionalProperties": false
     }
-   },
-   "required": [
-    "country",
-    "year"
-   ],
-   "additionalProperties": false
   },
-  "route_url": "https://agentshield.live/holidays"
- },
- {
-  "name": "agentshield_cryptopay",
-  "description": "Check an EVM stablecoin transfer: recipient checksum, token contract on that chain.",
-  "parameters": {
-   "type": "object",
-   "properties": {
-    "to": {
-     "type": "string",
-     "description": "Recipient 0x address"
-    },
-    "chain": {
-     "type": "string",
-     "description": "Chain id or name"
-    },
-    "token": {
-     "type": "string",
-     "description": "Optional USDC, USDT or contract address"
+  {
+    "name": "agentshield_cryptopay",
+    "description": "Check an EVM stablecoin transfer: recipient checksum, token contract on that chain.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "to": {
+          "type": "string",
+          "description": "Recipient 0x address"
+        },
+        "chain": {
+          "type": "string",
+          "description": "Chain id or name"
+        },
+        "token": {
+          "type": "string",
+          "description": "Optional USDC, USDT or contract address"
+        }
+      },
+      "required": [
+        "to",
+        "chain"
+      ],
+      "additionalProperties": false
     }
-   },
-   "required": [
-    "to",
-    "chain"
-   ],
-   "additionalProperties": false
   },
-  "route_url": "https://agentshield.live/cryptopay"
- },
- {
-  "name": "agentshield_choose",
-  "description": "Free. Ask whether a subtask is worth paying for. Returns pay, compute or skip and the route to call.",
-  "parameters": {
-   "type": "object",
-   "properties": {
-    "task": {
-     "type": "string",
-     "description": "One sentence: what you are about to do or look up"
+  {
+    "name": "agentshield_fields",
+    "description": "Check required Peppol invoice fields before sending. Not arithmetic. Returns ok and the missing fields.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "string",
+          "description": "peppol"
+        },
+        "number": {
+          "type": "string",
+          "description": "Optional invoice number"
+        },
+        "date": {
+          "type": "string",
+          "description": "Optional YYYY-MM-DD"
+        },
+        "seller": {
+          "type": "string",
+          "description": "Optional seller name"
+        },
+        "buyer": {
+          "type": "string",
+          "description": "Optional buyer name"
+        }
+      },
+      "required": [
+        "profile"
+      ],
+      "additionalProperties": false
     }
-   },
-   "required": [
-    "task"
-   ],
-   "additionalProperties": false
   },
-  "route_url": null
- }
+  {
+    "name": "agentshield_routing",
+    "description": "Check a German BLZ, Swiss IID, or Banxico SPEI clave before money moves. Not a SWIFT BIC lookup.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "system": {
+          "type": "string",
+          "description": "blz, iid, or spei"
+        },
+        "code": {
+          "type": "string",
+          "description": "The clearing code"
+        }
+      },
+      "required": [
+        "system",
+        "code"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "agentshield_settle",
+    "description": "Check when a TARGET, Fedwire, or CHAPS payment can arrive. Not a bank cutoff.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "system": {
+          "type": "string",
+          "description": "TARGET, Fedwire, or CHAPS"
+        },
+        "date": {
+          "type": "string",
+          "description": "YYYY-MM-DD"
+        }
+      },
+      "required": [
+        "system",
+        "date"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "agentshield_value",
+    "description": "Check a Lynx, ACSS, Real-Time Rail, SIC, or euroSIC value date. TARGET, Fedwire, and CHAPS are settle.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "system": {
+          "type": "string",
+          "description": "Lynx, ACSS, RTR, SIC, or euroSIC"
+        },
+        "date": {
+          "type": "string",
+          "description": "YYYY-MM-DD"
+        }
+      },
+      "required": [
+        "system",
+        "date"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "agentshield_choose",
+    "description": "Free. Ask whether a subtask is worth paying for. Returns pay, compute or skip and the route to call.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "task": {
+          "type": "string",
+          "description": "One sentence: what you are about to do or look up"
+        }
+      },
+      "required": [
+        "task"
+      ],
+      "additionalProperties": false
+    }
+  }
 ]
